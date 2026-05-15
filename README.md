@@ -10,7 +10,7 @@ public class BaseStructure {
     public void setUp(){
 
         WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
+        ChromeOptions options = new ChromeOptions();       //opens browser in selected mode
         //options.addArguments("--headless=new");
         options.addArguments("--incognito");
         options.addArguments("--start-maximized");
@@ -22,14 +22,18 @@ public class BaseStructure {
     @AfterEach
     public void tearDown(){
 
-        driver.quit();
+        driver.quit();     // closes browser after test complete
     }
 }
 ```
 In this practice test, I will be dealing with multiple elements such as input fields `Name`, `Email`, `Message`, `Captcha`, and button `Submit`.  
-As these input fields are constant, it is a good practice to consolidate them in a Page Object Model (POM). I call this class UltimateQASignUp
+As these input fields are constant, it is a good practice to consolidate them in a Page Object Model (POM). I call this class `UltimateQASignUp`
 
 ```java
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 public class UltimateQASignUp {
 
     private WebDriver driver;
@@ -45,21 +49,49 @@ public class UltimateQASignUp {
     By submitLoc = By.name("et_builder_submit_button");
     By responseLoc = By.cssSelector(".et-pb-contact-message");
 
-    public void fillForm(){
+    public void fillForm(String name, String email, String message, int captchaOffset){
         //Fill Form
         driver.findElement(nameLoc).sendKeys(name);
         driver.findElement(emailLoc).sendKeys(email);
         driver.findElement(messageLoc).sendKeys(message);
 
-        //Dynamic solving of captcha based on the two displayed numbers
+        //Dynamic solving of captcha
         WebElement captcha = driver.findElement(captchaLoc);
         int firstDigit  = Integer.parseInt(captcha.getAttribute("data-first_digit"));
         int secondDigit = Integer.parseInt(captcha.getAttribute("data-second_digit"));
-        int answer      = firstDigit + secondDigit;
+        int answer      = firstDigit + secondDigit + captchaOffset;
         captcha.sendKeys(String.valueOf(answer));
     }
 
-      public void submitButton(){
+    public void checkWrongCaptcha(String name, String email, String message, int captchaOffset){
+        //Fill Form
+        driver.findElement(nameLoc).sendKeys(name);
+        driver.findElement(emailLoc).sendKeys(email);
+        driver.findElement(messageLoc).sendKeys(message);
+
+        //Dynamic solving of captcha
+        WebElement captcha = driver.findElement(captchaLoc);
+        int firstDigit  = Integer.parseInt(captcha.getAttribute("data-first_digit"));
+        int secondDigit = Integer.parseInt(captcha.getAttribute("data-second_digit"));
+        int answer      = firstDigit + secondDigit + captchaOffset;
+        captcha.sendKeys(String.valueOf(answer));
+    }
+
+    public void checkInvalidEmail(String name, String email, String message, int captchaOffset){
+        //Fill Form
+        driver.findElement(nameLoc).sendKeys(name);
+        driver.findElement(emailLoc).sendKeys(email); // Invalid email
+        driver.findElement(messageLoc).sendKeys(message);
+
+        //Dynamic solving of captcha
+        WebElement captcha = driver.findElement(captchaLoc);
+        int firstDigit  = Integer.parseInt(captcha.getAttribute("data-first_digit"));
+        int secondDigit = Integer.parseInt(captcha.getAttribute("data-second_digit"));
+        int answer      = firstDigit + secondDigit + captchaOffset;
+        captcha.sendKeys(String.valueOf(answer));
+    }
+
+    public void submitButton(){
         //Submit Form
         driver.findElement(submitLoc).click();
     }
