@@ -29,24 +29,24 @@ In  `pom.xml` add the following dependencies and build after `</properties>`
 
 ```xml
     <dependencies>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.25.0</version>
+        <dependency> <!-- Main Selenium library — controls the browser -->
+            <groupId>org.seleniumhq.selenium</groupId> <!-- organization name -->
+            <artifactId>selenium-java</artifactId> <!-- specific library name -->
+            <version>4.25.0</version> <!-- library version -->
         </dependency>
-        <dependency>
+        <dependency> <!-- Auto downloads correct ChromeDriver for your Chrome version -->
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>5.8.0</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- JUnit 5 — runs your @Test methods -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.11.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
+    <build> <!-- tells Maven how to BUILD your project -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
