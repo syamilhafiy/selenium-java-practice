@@ -1,7 +1,7 @@
-Selenium Java Practice
+# Selenium Java Practice
 
 Automated test suite built with Selenium 4 + Java + JUnit 5,
-documenting my learning journey into Software QA.
+documenting my learning journey into Software QA automation.
 
 ## Prerequisites
 - Windows 10/11
