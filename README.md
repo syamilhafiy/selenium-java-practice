@@ -1,4 +1,4 @@
-# Selenium Java Practice
+# Selenium Java Test Setup
 
 Automated test suite built with Selenium 4 + Java + JUnit 5,
 documenting my learning journey into Software QA automation.
