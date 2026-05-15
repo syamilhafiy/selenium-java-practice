@@ -14,6 +14,8 @@ a variety of elements to interact with.
 
 ## Test Script
 ```java
+public class SeleniumTestStudy {
+
 @Test
     public void checkFollowTwitter() { //practice element locator, click twitter button, and find username
 
