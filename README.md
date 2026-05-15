@@ -1,7 +1,116 @@
-# Selenium Java Practice
-Documenting my learning process via LinkedIn Learning Course - `Learning Selenium: Structure, Scale, Run, and Optimize Automated Tests`
+# Practice Test 3
+Before I begin, I am creating a new Java class under test/java named `BaseStructure` to consolidate duplicate global steps such as browser open and close behaviour. This way my actual test class `SeleniumTestStudy` can be simplified to only show test scripts.
 
-## Topics:
-1. Selenium Java Framework Setup - [branch 1](https://github.com/syamilhafiy/selenium-java-practice/tree/01-Selenium-java-framework-setup)
-2. Test 1 - Check Login Heading - [branch 2](https://github.com/syamilhafiy/selenium-java-practice/tree/02-Test-1-checkLoginHeading)
-3. Test 2 - Click Follow On Twitter - [branch 3](https://github.com/syamilhafiy/selenium-java-practice/tree/03-Test-2-clickShareTwitter)
+```java
+public class BaseStructure {
+
+    protected WebDriver driver;
+
+    @BeforeEach
+    public void setUp(){
+
+        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        //options.addArguments("--headless=new");
+        options.addArguments("--incognito");
+        options.addArguments("--start-maximized");
+        //options.addArguments("--disable-blink-features=AutomationControlled");
+
+        driver = new ChromeDriver(options);
+    }
+
+    @AfterEach
+    public void tearDown(){
+
+        driver.quit();
+    }
+}
+```
+In this practice test, I will be dealing with multiple elements such as input fields `Name`, `Email`, `Message`, `Captcha`, and button `Submit`.  
+As these input fields are constant, it is a good practice to consolidate them in a Page Object Model (POM). I call this class UltimateQASignUp
+
+```java
+public class UltimateQASignUp {
+
+    private WebDriver driver;
+
+    public UltimateQASignUp (WebDriver driver) {
+        this.driver = driver;
+    }
+
+    By nameLoc = By.id("et_pb_contact_name_0");
+    By emailLoc = By.id("et_pb_contact_email_0");
+    By messageLoc = By.id("et_pb_contact_message_0");
+    By captchaLoc = By.name("et_pb_contact_captcha_0");
+    By submitLoc = By.name("et_builder_submit_button");
+    By responseLoc = By.cssSelector(".et-pb-contact-message");
+
+    public void fillForm(){
+        //Fill Form
+        driver.findElement(nameLoc).sendKeys(name);
+        driver.findElement(emailLoc).sendKeys(email);
+        driver.findElement(messageLoc).sendKeys(message);
+
+        //Dynamic solving of captcha based on the two displayed numbers
+        WebElement captcha = driver.findElement(captchaLoc);
+        int firstDigit  = Integer.parseInt(captcha.getAttribute("data-first_digit"));
+        int secondDigit = Integer.parseInt(captcha.getAttribute("data-second_digit"));
+        int answer      = firstDigit + secondDigit;
+        captcha.sendKeys(String.valueOf(answer));
+    }
+
+      public void submitButton(){
+        //Submit Form
+        driver.findElement(submitLoc).click();
+    }
+}
+```
+## Test Case 3a - Valid Input
+| Field | Details |
+|-------|---------|
+| Test URL | `https://ultimateqa.com/complicated-page` |
+| Action | Fill form with valid inputs and click Submit |
+| Name | `Syamil Hafiy` |
+| Email | `syamilhca@gmail.com` |
+| Message | `Hello World!` |
+| Captcha | Sum of two displayed numbers |
+| Expected Result | `Thanks for contacting us` is displayed |
+| Actual Result | `Thanks for contacting us` is displayed |
+| Status | ✅ PASS |
+
+## Test Script
+ ```java
+ public class SeleniumTestStudy extends BaseStructure{
+
+    @Test
+    public void fillSignUpForm() { //Fill sign up form
+
+        driver.get("https://ultimateqa.com/complicated-page");
+
+        UltimateQASignUp ultimateQASignUpPom = new UltimateQASignUp(driver); //Naming POM variable
+
+        //Fill Form
+        ultimateQASignUpPom.fillForm(
+          "Syamil Hafiy",
+          "syamilhca@gmail.com",
+          "Hello World!",
+          0
+          );
+
+        //Submit Form
+        ultimateQASignUpPom.submitButton();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement response = wait.until (
+                ExpectedConditions.visibilityOfElementLocated(ultimateQASignUpPom.responseLoc)
+        );
+        String responseText = response.getText().trim();
+
+        assertEquals("Thanks for contacting us", responseText);
+    }
+```
+## Learning Outcomes
+1. Assigning POM variable.
+2. Automatically input variables into input fields with `.sendKeys`
+3. wait until `ExpectedConditions`
+4. Get `responseText` and compare with actual result.
