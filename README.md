@@ -12,6 +12,8 @@ For this practice I will be using UltimateQA's automation [website](https://ulti
 
 ## Test Script
 ```java
+public class SeleniumTestStudy {
+
 // Test method
 @Test
 public void checkLoginHeading() {
